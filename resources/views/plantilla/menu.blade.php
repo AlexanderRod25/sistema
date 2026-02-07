@@ -56,6 +56,27 @@
                     </ul>
                 </li>
                 @endcanany
+                @canany(['producto-list'])
+                <li class="nav-item" id="mnuAlmacen">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-speedometer"></i>
+                        <p>
+                            Almacén
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        @can('producto-list')
+                        <li class="nav-item">
+                            <a href="{{route('productos.index')}}" class="nav-link" id="itemProducto">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Productos</p>
+                            </a>
+                        </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
             </ul>
             <!--end::Sidebar Menu-->
         </nav>
