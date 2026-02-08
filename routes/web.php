@@ -10,10 +10,10 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\WebController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WebController::class, 'index'])->name('web.index');
+Route::get('/producto/{id}', [WebController::class, 'show'])->name('web.show');
 
 Route::middleware(['auth'])->group(function() {
     Route::resource('/usuarios', UserController::class);
