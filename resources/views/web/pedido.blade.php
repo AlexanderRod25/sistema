@@ -4,7 +4,6 @@
 <section class="py-5">
     <div class="container px-4 px-lg-12 my-5">
         <h2 class="fw-bold mb-4">Detalle de su Pedido</h2>
-        <form action="" method="post"></form>
         <div class="row">
             <!-- Cart Items -->
             <div class="col-lg-8">
@@ -18,74 +17,72 @@
                         </div>
                     </div>
                     <div class="card-body" id="cartItems">
-                        <!-- Product 1 -->
-                        <div class="row mb-4 cart-item">
+                        @forelse ($carrito as $id => $item)
+                        <!-- Product -->
+                        <div class="row align-items-center mb-3 cart-item">
+                            {{-- Nombre y codigo --}}
                             <div class="col-md-5 d-flex align-items-center">
-                                <img src="https://dummyimage.com/100x75/dee2e6/6c757d.jpg" class="img-fluid rounded"
-                                    alt="Fancy Product">
+                                <img src="{{ asset('uploads/productos/' . $item['imagen']) }}"
+                                style="width: 80px; height: 80px; object-fit: cover;" alt="{{ $item['nombre'] }}">
                                 <div class="ms-3">
-                                    <h5 class="mb-1">Fancy Product</h5>
-                                    <span class="text-muted d-block">Código: FP001</span>
+                                    <h6 class="mb-0">{{ $item['nombre'] }}</h5>
+                                    <small class="text-muted">{{ $item['codigo'] }}</small>
                                 </div>
                             </div>
-                            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
-                                <span>$80.00</span>
+                            {{-- Precio --}}
+                            <div class="col-md-2 text-center">
+                                <span class="fw-bold">{{ number_format($item['precio'], 2) }}</span>
                             </div>
-                            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                            {{-- Cantidad --}}
+                            <div class="col-md-2 d-flex justify-content-center">
                                 <div class="input-group input-group-sm" style="max-width: 100px;">
-                                    <button class="btn btn-outline-secondary qty-btn" type="button"
-                                        data-action="decrease">-</button>
-                                    <input type="text" class="form-control text-center qty-input" value="1" readonly>
-                                    <button class="btn btn-outline-secondary qty-btn" type="button"
-                                        data-action="increase">+</button>
+                                    <a class="btn btn-outline-secondary" href="{{ route('carrito.restar', ['producto_id' => $id]) }}"
+                                        data-action="decrease">-</a>
+                                    <input type="text" class="form-control text-center" value="{{ $item['cantidad'] }}"
+                                        readonly>
+                                    <a href="{{ route('carrito.sumar', ['producto_id' => $id]) }}"
+                                    class="btn btn-outline-secondary btn-sm">
+                                        +
+                                    </a>
                                 </div>
                             </div>
-                            <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
-                                <span class="subtotal me-3">$80.00</span>
-                                <button class="btn btn-sm btn-outline-danger remove-item">
+                            {{-- Subtotal --}}
+                            <div class="col-md-3 d-flex align-items-center justify-content-end">
+                                <div class="text-end me-3">
+                                    <span
+                                        class="fw-bold subtotal">{{ number_format($item['precio'] * $item['cantidad'], 2) }}</span>
+                                </div>
+                                <a class="btn btn-sm btn-outline-danger" href="{{ route('carrito.eliminar', $id) }}">
                                     <i class="bi bi-trash"></i>
-                                </button>
+                                </a>
                             </div>
-                        </div>
-                        <hr>
 
-                        <!-- Product 2 -->
-                        <div class="row mb-4 cart-item">
-                            <div class="col-md-5 d-flex align-items-center">
-                                <img src="https://dummyimage.com/100x75/dee2e6/6c757d.jpg" class="img-fluid rounded"
-                                    alt="Special Item">
-                                <div class="ms-3">
-                                    <h5 class="mb-1">Special Item</h5>
-                                    <span class="text-muted d-block">Código: SI002</span>
-                                </div>
-                            </div>
-                            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
-                                <span>$18.00</span>
-                            </div>
-                            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
-                                <div class="input-group input-group-sm" style="max-width: 100px;">
-                                    <button class="btn btn-outline-secondary qty-btn" type="button"
-                                        data-action="decrease">-</button>
-                                    <input type="text" class="form-control text-center qty-input" value="2" readonly>
-                                    <button class="btn btn-outline-secondary qty-btn" type="button"
-                                        data-action="increase">+</button>
-                                </div>
-                            </div>
-                            <div class="col-md-3 text-end d-flex align-items-center justify-content-end">
-                                <span class="subtotal me-3">$36.00</span>
-                                <button class="btn btn-sm btn-outline-danger remove-item">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
                         </div>
                         <hr>
+                        @empty
+                        <div class="text-center">
+                            <p>Tu carrito esta vacío</p>
+                        </div>
+                        @endforelse
                     </div>
+                    @if (session('mensaje'))
+                        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                            {{ session('mensaje') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="cerrar"></button>
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="cerrar"></button>
+                        </div>
+                    @endif
                     <div class="card-footer bg-light">
                         <div class="row">
                             <div class="col text-end">
-                                <button class="btn btn-outline-danger me-2" id="clearCart">
+                                <a class="btn btn-outline-danger me-2" href="{{route('carrito.vaciar')}}">
                                     <i class="bi bi-x-circle me-1"></i>Vaciar carrito
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -99,15 +96,23 @@
                         <h5 class="mb-0">Resumen del Pedido</h5>
                     </div>
                     <div class="card-body">
+                        @php
+                            $total = 0;
+                            foreach ($carrito as $item) {
+                                $total += $item['precio'] * $item['cantidad'];
+                            }
+                        @endphp
                         <div class="d-flex justify-content-between mb-4">
                             <strong>Total</strong>
-                            <strong id="orderTotal">$192.96</strong>
+                            <strong id="orderTotal">${{ number_format($total, 2) }}</strong>
                         </div>
                         <!-- Checkout Button -->
-                        <button class="btn btn-primary w-100" id="checkout">
-                            <i class="bi bi-credit-card me-1"></i>Realizar pedido
-                        </button>
-
+                        <form action="{{route('pedido.realizar')}}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary w-100" id="checkout">
+                                <i class="bi bi-credit-card me-1"></i>Realizar pedido
+                            </button>
+                        </form>
                         <!-- Continue Shopping -->
                         <a href="/" class="btn btn-outline-secondary w-100 mt-3">
                             <i class="bi bi-arrow-left me-1"></i>Continuar comprando
@@ -116,7 +121,6 @@
                 </div>
             </div>
         </div>
-        </form>
     </div>
 </section>
 @endsection

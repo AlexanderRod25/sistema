@@ -11,15 +11,27 @@ use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\WebController;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\PedidoController;
 
 Route::get('/', [WebController::class, 'index'])->name('web.index');
 Route::get('/producto/{id}', [WebController::class, 'show'])->name('web.show');
+
+Route::get('/carrito', [CarritoController::class, 'mostrar'])->name('carrito.mostrar');
+Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+Route::get('/carrito/sumar', [CarritoController::class, 'sumar'])->name('carrito.sumar');
+Route::get('/carrito/restar', [CarritoController::class, 'restar'])->name('carrito.restar');
+Route::get('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+Route::get('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
 
 Route::middleware(['auth'])->group(function() {
     Route::resource('/usuarios', UserController::class);
     Route::patch('usuarios/{usuario}/toggle', [UserController::class, 'toggleStatus'])->name('usuarios.toggle');
     Route::resource('roles', RoleController::class);
     Route::resource('productos', ProductoController::class);
+
+    Route::post('/pedido/realizar', [PedidoController::class, 'realizar'])->name('pedido.realizar');
+    Route::get('/perfil/pedidos', [PedidoController::class, 'index'])->name('perfil.pedidos');
 
     Route::get('dashboard', function() {
     return view('dashboard');
